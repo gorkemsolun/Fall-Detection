@@ -322,6 +322,14 @@ for i in range(len(grid_results["mean_test_score"])):
         }
     )
 
+for i in range(len(grid_results_poly["mean_test_score"])):
+    results.append(
+        {
+            "mean_test_score": grid_results_poly["mean_test_score"][i],
+            "params": grid_results_poly["params"][i],
+        }
+    )
+
 # Sort the results by the mean_test_score
 results = sorted(results, key=lambda x: x["mean_test_score"], reverse=True)
 
