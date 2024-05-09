@@ -22,6 +22,8 @@ from sklearn.cluster import KMeans
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.utils._testing import ignore_warnings
+from sklearn.exceptions import ConvergenceWarning
 import random
 
 # Set random seed
@@ -391,10 +393,18 @@ param_grid_mlp = {
     "learning_rate": ["constant", "invscaling", "adaptive"],
 }
 
+
+# Function to apply grid search for the MLP model without warnings
+@ignore_warnings(category=ConvergenceWarning)
+def apply_grid_search(mlp, param_grid, data_train, labels_train):
+    mlp_search = GridSearchCV(mlp, param_grid, cv=6, scoring="accuracy", n_jobs=-1)
+    mlp_search.fit(data_train, labels_train)
+    return mlp_search
+
+
 # Search for the best hyperparameters for the MLP model
 mlp = MLPClassifier()
-mlp_search = GridSearchCV(mlp, param_grid_mlp, cv=6, scoring="accuracy", n_jobs=-1)
-mlp_search.fit(data_train, labels_train)
+mlp_search = apply_grid_search(mlp, param_grid_mlp, data_train, labels_train)
 grid_results = mlp_search.cv_results_
 
 # Combine the results
