@@ -6,7 +6,7 @@
 
 # You may need to update the data path.
 
-# Finding the best MLP may take up to 7 minutes.
+# Finding the best MLP may take up to 10 minutes.
 
 # It may give warnings about the convergence of the MLP model.
 
@@ -340,7 +340,7 @@ results_df = pd.DataFrame(results)
 print("Results: ", results_df)
 
 # Get the best hyperparameters
-best_hyperparameters = results[0]["params"]
+best_hyperparameters = svm_search.best_params_
 print("Best Hyperparameters: ", best_hyperparameters)
 
 # Train the SVM model with the best hyperparameters
@@ -382,13 +382,9 @@ param_grid_mlp = {
         (4, 4),
         (8),
         (8, 8),
-        (16),
-        (16, 16),
-        (32),
-        (32, 32),
     ],
     "activation": ["identity", "logistic", "tanh", "relu"],
-    "solver": ["lbfgs", "sgd", "adam"],
+    "solver": ["lbfgs", "adam"],
     "alpha": [0.0001, 0.001, 0.01, 0.1],
     "learning_rate": ["constant", "invscaling", "adaptive"],
 }
@@ -397,7 +393,7 @@ param_grid_mlp = {
 # Function to apply grid search for the MLP model without warnings
 @ignore_warnings(category=ConvergenceWarning)
 def apply_grid_search(mlp, param_grid, data_train, labels_train):
-    mlp_search = GridSearchCV(mlp, param_grid, cv=6, scoring="accuracy", n_jobs=-1)
+    mlp_search = GridSearchCV(mlp, param_grid, cv=6, scoring="accuracy")
     mlp_search.fit(data_train, labels_train)
     return mlp_search
 
